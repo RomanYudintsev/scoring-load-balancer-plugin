@@ -23,19 +23,21 @@
  */
 package jp.ikedam.jenkins.plugins.scoringloadbalancer.rules;
 
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-
 import hudson.Extension;
 import hudson.model.Descriptor;
+import hudson.model.ParameterValue;
 import hudson.model.Queue.Task;
 import hudson.model.queue.MappingWorksheet.ExecutorChunk;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
 import hudson.util.FormValidation;
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+
+import java.util.List;
 
 /**
  * Score nodes depending on their loads.
@@ -105,7 +107,7 @@ public class NodeLoadScoringRule extends ScoringRule
      * @see jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule#updateScores(hudson.model.Queue.Task, hudson.model.queue.MappingWorksheet.WorkChunk, hudson.model.queue.MappingWorksheet.Mapping, jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore)
      */
     @Override
-    public boolean updateScores(Task task, WorkChunk wc, Mapping m, NodesScore nodesScore)
+    public boolean updateScores(Task task, WorkChunk wc, Mapping m, NodesScore nodesScore, List<ParameterValue> taskParameters)
     {
         for(ExecutorChunk ec: nodesScore.getExecutorChunks())
         {

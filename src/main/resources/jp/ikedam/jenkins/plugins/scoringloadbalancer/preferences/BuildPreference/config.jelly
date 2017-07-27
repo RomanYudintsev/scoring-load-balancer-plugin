@@ -29,6 +29,9 @@ THE SOFTWARE.
     <f:entry title="${%Preference Score}" field="preference">
       <f:textbox default="0" />
     </f:entry>
+    <f:entry title="${%Preference Score Name in Params}" field="preferenceName">
+      <f:textbox default="" />
+    </f:entry>
     <f:entry title="">
       <div align="right">
         <f:repeatableDeleteButton />

@@ -24,27 +24,22 @@
 package jp.ikedam.jenkins.plugins.scoringloadbalancer.rules;
 
 import hudson.Extension;
-import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
-import hudson.model.Node;
+import hudson.model.*;
 import hudson.model.Queue.Task;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
 import hudson.model.queue.SubTask;
 import hudson.util.FormValidation;
-
-import java.util.HashSet;
-import java.util.Set;
-
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore;
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A score keeper depends on build results on each nodes.
@@ -147,7 +142,7 @@ public class BuildResultScoringRule extends ScoringRule
      */
     @Override
     public boolean updateScores(Task task, WorkChunk wc, Mapping m,
-            NodesScore nodesScore)
+            NodesScore nodesScore, List<ParameterValue> taskParameters)
     {
         for(SubTask subtask: wc)
         {

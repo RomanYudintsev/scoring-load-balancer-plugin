@@ -23,34 +23,28 @@
  */
 package jp.ikedam.jenkins.plugins.scoringloadbalancer.rules;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-
 import antlr.ANTLRException;
-
 import hudson.Extension;
 import hudson.Util;
-import hudson.matrix.MatrixConfiguration;
-import hudson.model.Descriptor;
-import hudson.model.Job;
-import hudson.model.Label;
-import hudson.model.Node;
+import hudson.model.*;
 import hudson.model.Queue.Task;
 import hudson.model.labels.LabelExpression;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
 import hudson.model.queue.SubTask;
 import hudson.util.FormValidation;
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringRule;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.preferences.BuildPreference;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.preferences.BuildPreferenceJobProperty;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.preferences.BuildPreferenceNodeProperty;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Scores nodes depending on preferences of nodes and projects.
@@ -105,7 +99,7 @@ public class NodePreferenceScoringRule extends ScoringRule
      */
     @Override
     public boolean updateScores(Task task, WorkChunk wc, Mapping m,
-            NodesScore nodesScore)
+            NodesScore nodesScore, List<ParameterValue> taskParameters)
     {
         // scores by preference configured in nodes.
         for(Node node: nodesScore.getNodes())
@@ -140,7 +134,7 @@ public class NodePreferenceScoringRule extends ScoringRule
                         {
                             continue;
                         }
-                        nodesScore.addScore(node, pref.getPreference() * getProjectPreferenceScale());
+                        nodesScore.addScore(node, pref.getPreference(taskParameters) * getProjectPreferenceScale());
                     }
                 }
                 catch(ANTLRException e)
@@ -158,12 +152,6 @@ public class NodePreferenceScoringRule extends ScoringRule
         if(!(subtask instanceof Job))
         {
             return null;
-        }
-        
-        if(subtask instanceof MatrixConfiguration)
-        {
-            MatrixConfiguration conf = (MatrixConfiguration)subtask;
-            return conf.getParent().getProperty(BuildPreferenceJobProperty.class);
         }
         
         Job<?,?> job = (Job<?,?>)subtask;

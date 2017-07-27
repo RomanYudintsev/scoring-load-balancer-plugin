@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import hudson.model.Node;
+import hudson.model.ParameterValue;
 import hudson.model.Queue.Task;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
@@ -66,7 +67,7 @@ public class TestingScoringRule extends ScoringRule
      */
     @Override
     public synchronized boolean updateScores(Task task, WorkChunk wc, Mapping m,
-            NodesScore nodesScore) throws Exception
+            NodesScore nodesScore, ParameterValue taskParameters) throws Exception
     {
         if(e != null)
         {

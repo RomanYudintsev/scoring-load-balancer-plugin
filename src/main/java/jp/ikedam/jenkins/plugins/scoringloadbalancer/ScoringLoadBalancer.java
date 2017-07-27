@@ -23,39 +23,25 @@
  */
 package jp.ikedam.jenkins.plugins.scoringloadbalancer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-
-import jenkins.model.Jenkins;
 import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
-import hudson.model.Describable;
-import hudson.model.LoadBalancer;
-import hudson.model.Descriptor;
-import hudson.model.Node;
+import hudson.model.*;
 import hudson.model.Queue;
 import hudson.model.Queue.Task;
 import hudson.model.queue.MappingWorksheet;
 import hudson.model.queue.MappingWorksheet.ExecutorChunk;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
+import jenkins.model.Jenkins;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.StaplerRequest;
+
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * LoadBalancer using scores of nodes.
@@ -216,7 +202,9 @@ public class ScoringLoadBalancer extends LoadBalancer implements Describable<Sco
         
         // Current target work chunk (subtask).
         WorkChunk wc = worksheet.works(targetWorkChunk);
-        
+
+        ParametersAction paramsAction = worksheet.item.getAction(ParametersAction.class);
+        List<ParameterValue> taskParameters = paramsAction.getParameters();
         // Initialize nodes-to-scores map.
         List<ExecutorChunk> executors = new ArrayList<ExecutorChunk>(wc.applicableExecutorChunks());
         NodesScore nodesScore = new NodesScore(executors);
@@ -224,7 +212,7 @@ public class ScoringLoadBalancer extends LoadBalancer implements Describable<Sco
         // Score nodes by calling enabled ScoringRules.
         for(ScoringRule scoringRule: getScoringRuleList())
         {
-            if(!scoringRule.updateScores(task, wc, m, nodesScore))
+            if(!scoringRule.updateScores(task, wc, m, nodesScore, taskParameters))
             {
                 break;
             }

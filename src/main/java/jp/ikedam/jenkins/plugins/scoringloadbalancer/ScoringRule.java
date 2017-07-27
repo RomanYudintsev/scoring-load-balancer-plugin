@@ -25,16 +25,14 @@ package jp.ikedam.jenkins.plugins.scoringloadbalancer;
 
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.Describable;
-import hudson.model.LoadBalancer;
-import hudson.model.Descriptor;
+import hudson.model.*;
 import hudson.model.Queue.Task;
 import hudson.model.queue.MappingWorksheet.Mapping;
 import hudson.model.queue.MappingWorksheet.WorkChunk;
-
 import jenkins.model.Jenkins;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer.NodesScore;
+
+import java.util.List;
 
 /**
  * Scores nodes to determine which is proper to have a task build on.
@@ -58,8 +56,8 @@ public abstract class ScoringRule extends AbstractDescribableImpl<ScoringRule> i
      * 
      * @throws Exception if any exception occurs, {@link ScoringLoadBalancer} falls back to a {@link LoadBalancer} registered originally.
      */
-    public abstract boolean updateScores(Task task, WorkChunk wc, Mapping m, NodesScore nodesScore) throws Exception;
-    
+    public abstract boolean updateScores(Task task, WorkChunk wc, Mapping m, NodesScore nodesScore, List<ParameterValue> taskParameters) throws Exception;
+
     /**
      * Returns all {@link ScoringRule}s registered to Jenkins.
      * 

@@ -24,27 +24,18 @@
 
 package jp.ikedam.jenkins.plugins.scoringloadbalancer.preferences;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import jenkins.model.Jenkins;
-import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
+import antlr.ANTLRException;
 import hudson.Extension;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.AutoCompletionCandidates;
-import hudson.model.Descriptor;
-import hudson.model.Label;
+import hudson.model.*;
 import hudson.model.labels.LabelExpression;
 import hudson.util.FormValidation;
-
+import jenkins.model.Jenkins;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import antlr.ANTLRException;
+import java.util.*;
 
 /**
  * Holds the configuration that which nodes are preferred to use.
@@ -53,6 +44,7 @@ import antlr.ANTLRException;
  */
 public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
 {
+
     private String labelExpression;
     
     /**
@@ -64,7 +56,11 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
     {
         return labelExpression;
     }
-    
+    private String preferenceName;
+    public String getPreferenceName()
+    {
+        return preferenceName;
+    }
     private int preference;
     
     /**
@@ -72,8 +68,19 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
      * 
      * @return the preference score
      */
-    public int getPreference()
+    public int getPreference(List<ParameterValue> taskParameters)
     {
+        if (preferenceName.length() > 0) {
+            for (ParameterValue par : taskParameters) {
+                if (par.getName().equalsIgnoreCase(preferenceName))
+                {
+                    try {
+                        preference += Integer.parseInt((String) par.getValue());
+                    } catch (Exception e) {}
+                    break;
+                }
+            }
+        }
         return preference;
     }
     
@@ -84,12 +91,14 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
      * 
      * @param labelExpression
      * @param preference
+     * @param preferenceName
      */
     @DataBoundConstructor
-    public BuildPreference(String labelExpression, int preference)
+    public BuildPreference(String labelExpression, int preference, String preferenceName)
     {
         this.labelExpression = StringUtils.trim(labelExpression);
         this.preference = preference;
+        this.preferenceName = preferenceName;
     }
     
     /**

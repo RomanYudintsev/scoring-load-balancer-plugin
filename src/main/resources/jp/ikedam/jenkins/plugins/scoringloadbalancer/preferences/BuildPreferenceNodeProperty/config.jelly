@@ -26,4 +26,7 @@ THE SOFTWARE.
     <f:entry title="${%Preference Score}" field="preference">
       <f:textbox default="0" />
     </f:entry>
+    <f:entry title="${%Preference Score Name}" field="preferenceName">
+      <f:textbox default="" />
+    </f:entry>
 </j:jelly>
