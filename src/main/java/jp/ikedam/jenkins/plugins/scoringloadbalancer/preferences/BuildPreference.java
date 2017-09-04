@@ -30,12 +30,14 @@ import hudson.model.*;
 import hudson.model.labels.LabelExpression;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
+import jp.ikedam.jenkins.plugins.scoringloadbalancer.ScoringLoadBalancer;
 import jp.ikedam.jenkins.plugins.scoringloadbalancer.util.ValidationUtil;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Holds the configuration that which nodes are preferred to use.
@@ -44,6 +46,7 @@ import java.util.*;
  */
 public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
 {
+    private static final Logger LOGGER = Logger.getLogger(BuildPreference.class.getName());
 
     private String labelExpression;
     
@@ -76,7 +79,9 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
                 {
                     try {
                         preference += Integer.parseInt((String) par.getValue());
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        LOGGER.info("Not found "+preferenceName+" value in env.");
+                    }
                     break;
                 }
             }
