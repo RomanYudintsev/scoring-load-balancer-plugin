@@ -67,7 +67,7 @@ public class TestingScoringRule extends ScoringRule
      */
     @Override
     public synchronized boolean updateScores(Task task, WorkChunk wc, Mapping m,
-            NodesScore nodesScore, ParameterValue taskParameters) throws Exception
+            NodesScore nodesScore, List<ParameterValue> taskParameters) throws Exception
     {
         if(e != null)
         {

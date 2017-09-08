@@ -243,11 +243,15 @@ public class ScoringLoadBalancerJenkinsRule extends JenkinsRule
      * 
      * @see org.jvnet.hudson.test.JenkinsRule#after()
      */
-    protected void after() {
+    public void after() {
         if(Functions.isWindows()) {
             purgeSlaves();
         }
-        super.after();
+        try {
+            super.after();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         if(TestEnvironment.get() != null)
         {
             try

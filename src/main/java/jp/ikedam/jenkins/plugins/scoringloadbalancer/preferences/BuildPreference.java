@@ -73,12 +73,13 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
      */
     public int getPreference(List<ParameterValue> taskParameters)
     {
+        int preferenceDelta = 0;
         if (preferenceName.length() > 0) {
             for (ParameterValue par : taskParameters) {
                 if (par.getName().equalsIgnoreCase(preferenceName))
                 {
                     try {
-                        preference += Integer.parseInt((String) par.getValue());
+                        preferenceDelta += Integer.parseInt((String) par.getValue());
                     } catch (Exception e) {
                         LOGGER.info("Not found "+preferenceName+" value in env.");
                     }
@@ -86,7 +87,7 @@ public class BuildPreference extends AbstractDescribableImpl<BuildPreference>
                 }
             }
         }
-        return preference;
+        return preference+preferenceDelta;
     }
     
     /**

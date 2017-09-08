@@ -105,9 +105,9 @@ public class NodePreferenceScoringRuleJenkinsTest
         
         FreeStyleProject p = j.createFreeStyleProject();
         p.addProperty(new BuildPreferenceJobProperty(Arrays.asList(
-                new BuildPreference("master", 1),
-                new BuildPreference("nodelabel", 2),
-                new BuildPreference(String.format("%s && nodelabel", node1.getNodeName()), 4)
+                new BuildPreference("master", 1, "test"),
+                new BuildPreference("nodelabel", 2,"test"),
+                new BuildPreference(String.format("%s && nodelabel", node1.getNodeName()), 4, "test")
         )));
         
         p.scheduleBuild2(0).get(BUILD_TIMEOUT, TimeUnit.SECONDS);
@@ -131,9 +131,9 @@ public class NodePreferenceScoringRuleJenkinsTest
                 new TextAxis("axis1", "value1")
         ));
         p.addProperty(new BuildPreferenceJobProperty(Arrays.asList(
-                new BuildPreference("master", 1),
-                new BuildPreference("nodelabel", 2),
-                new BuildPreference(String.format("%s && nodelabel", node1.getNodeName()), 4)
+                new BuildPreference("master", 1, "test"),
+                new BuildPreference("nodelabel", 2,"test"),
+                new BuildPreference(String.format("%s && nodelabel", node1.getNodeName()), 4, "test")
         )));
         p.save();
         

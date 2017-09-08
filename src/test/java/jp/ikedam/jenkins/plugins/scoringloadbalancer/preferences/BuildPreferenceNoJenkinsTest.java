@@ -26,7 +26,11 @@ package jp.ikedam.jenkins.plugins.scoringloadbalancer.preferences;
 
 import static org.junit.Assert.*;
 
+import hudson.model.ParameterValue;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -37,39 +41,40 @@ public class BuildPreferenceNoJenkinsTest
     public void testBuildPreference()
     {
         {
-            BuildPreference target = new BuildPreference("node1", 10);
+            BuildPreference target = new BuildPreference("node1", 10, "test");
             assertEquals("node1", target.getLabelExpression());
-            assertEquals(10, target.getPreference());
+            assertEquals(10, target.getPreference(new ArrayList<ParameterValue>()));
         }
         
         {
-            BuildPreference target = new BuildPreference("node2 && node3", -20);
+            BuildPreference target = new BuildPreference("node2 && node3", -20, "test");
             assertEquals("node2 && node3", target.getLabelExpression());
-            assertEquals(-20, target.getPreference());
+            assertEquals(-20, target.getPreference(new ArrayList<ParameterValue>()));
         }
         
         {
-            BuildPreference target = new BuildPreference(null, 0);
+            BuildPreference target = new BuildPreference(null, 0, "test");
             assertEquals(null, target.getLabelExpression());
-            assertEquals(0, target.getPreference());
+            assertEquals(0, target.getPreference(new ArrayList<ParameterValue>()));
         }
         
         {
-            BuildPreference target = new BuildPreference("", 0);
+            BuildPreference target = new BuildPreference("", 0, "test");
             assertEquals("", target.getLabelExpression());
-            assertEquals(0, target.getPreference());
+
+            assertEquals(0, target.getPreference(new ArrayList<ParameterValue>()));
         }
         
         {
-            BuildPreference target = new BuildPreference("  ", 0);
+            BuildPreference target = new BuildPreference("  ", 0, "test");
             assertEquals("", target.getLabelExpression());
-            assertEquals(0, target.getPreference());
+            assertEquals(0, target.getPreference(new ArrayList<ParameterValue>()));
         }
         
         {
-            BuildPreference target = new BuildPreference(" a && b ", 0);
+            BuildPreference target = new BuildPreference(" a && b ", 0, "test");
             assertEquals("a && b", target.getLabelExpression());
-            assertEquals(0, target.getPreference());
+            assertEquals(0, target.getPreference(new ArrayList<ParameterValue>()));
         }
     }
 }
